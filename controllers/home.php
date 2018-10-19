@@ -74,7 +74,7 @@ switch ($action) {
         $actionGroups = getActionGroups($db, $statuses);
 
         ?>
-
+        <h1>Board</h1>
         <div id="statuses">
             <?php foreach ($statuses as $statusid => $status) { ?>
                 <div class="lane" ondrop="drop(event, <?= $statusid ?>)" ondragover="allowDrop(event)">

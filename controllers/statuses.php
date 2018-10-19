@@ -28,7 +28,9 @@ switch ($action) {
         </table>
         <script>
             $(document).ready(function () {
-                $("#statuses").DataTable();
+                $("#statuses").DataTable({
+                    "order": []
+                });
             });
         </script>
         <?php

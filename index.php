@@ -47,7 +47,8 @@ $path = "controllers/$controller.php";
         <a href="home">Home</a>
         <a href="actions">Actions</a>
         <a href="statuses">Statuses</a>
-        <!--<a href="users">Users</a>-->
+        <a href="users">Users</a>
+        <a href="users">Teams</a>
     </div>
 </div>
 <div style="padding: 10px; width: 70%; margin: auto; background-color: #eee">
