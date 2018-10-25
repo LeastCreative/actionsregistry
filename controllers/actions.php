@@ -60,15 +60,32 @@ switch ($action) {
                     <td><?= $action['description'] ?></td>
                     <td>
                         <a class="btn btn-sm btn-secondary" href="actions/edit/<?= $actionId ?>">Edit</a>
+                        <a class="btn btn-sm btn-danger" href="actions/delete/<?= $actionId ?>">Delete</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
+            <tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Assigned To</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+            </tfoot>
         </table>
         <script>
             $(document).ready(function () {
 
-                $("#actions").DataTable({
+                $('#actions tfoot th').each(function () {
+                    var title = $(this).text();
+                    if (title) {
+                        $(this).html('<input type="text" placeholder="Search ' + title + '" />');
+                    }
+                });
+
+                var table = $("#actions").DataTable({
                     order: [],
                     dom: 'Bfrtip',
                     lengthChange: false,
@@ -78,6 +95,15 @@ switch ($action) {
                             window.location.href = "actions/new"
                         }
                     }]
+                });
+
+                table.columns().every(function () {
+                    var self = this;
+                    $('input', this.footer()).on('keyup change', function () {
+                        if (self.search() !== this.value) {
+                            self.search(this.value).draw();
+                        }
+                    });
                 });
             });
         </script>
@@ -106,6 +132,15 @@ switch ($action) {
         } else {
             echo 'error';
         }
+        break;
+
+    /**
+     * create a new action
+     */
+    case "delete":
+        $sql = "DELETE FROM actions WHERE action_id = $id";
+        echo mysqli_query($db, $sql);
+        header('location: ..');
         break;
 
     /**
@@ -170,7 +205,7 @@ switch ($action) {
                         $selected = $userId == $action['owner_id'] ? 'selected' : '';
                         echo "<option value='$userId' $selected>$user</option>";
                     } ?>
-                </select>            </div>
+                </select></div>
             <div class="form-group">
                 <label>Status</label>
                 <select name="statusId" class="form-control">

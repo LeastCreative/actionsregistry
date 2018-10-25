@@ -36,12 +36,12 @@ $path = "controllers/$controller.php";
         .nav a {
             padding: 10px;
             margin: 10px;
-            background-color: #eeeeee;
+            background-color: #fff;
         }
     </style>
 </head>
 
-<body style="background-color: #b8daff">
+<body style="background-color: #30abff">
 <div style="text-align: center;">
     <div class="nav">
         <a href="home">Home</a>
@@ -51,7 +51,7 @@ $path = "controllers/$controller.php";
         <a href="users">Teams</a>
     </div>
 </div>
-<div style="padding: 10px; width: 70%; margin: auto; background-color: #eee">
+<div style="padding: 10px; width: 70%; margin: auto; background-color: #fff">
 
     <?php
 

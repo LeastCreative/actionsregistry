@@ -60,6 +60,7 @@ CREATE TABLE assignments(
     action_id INT NOT NULL,
     FOREIGN KEY(user_id) REFERENCES users(user_id),
     FOREIGN KEY(action_id) REFERENCES actions(action_id)
+        ON DELETE CASCADE
 );
 
 

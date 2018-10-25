@@ -19,6 +19,7 @@
         padding: 10px;
         border-top: #e2e6ea solid 15px;
         border-left: #e2e6ea solid 15px;
+        overflow-y:scroll;
     }
 
     .actions {
@@ -81,7 +82,20 @@ switch ($action) {
                     <h3><?= $status ?></h3>
                     <div class="actions">
                         <?php foreach ($actionGroups[$statusid] as $actionId => $action) {
-                            echo "<div id='$actionId' class='action' draggable='true' ondragstart='drag(event)'>$action</div>";
+                            echo "<div id='$actionId' class='action' draggable='true' ondragstart='drag(event)'>";
+                            echo "<h4>" . $action['name'] . "</h4>";
+
+                            if (isset($action['assignments'])) {
+                                echo "<h6>Assigned To:</h6>";
+                                echo "<ul style='font-size: .75em'>";
+                                foreach ($action['assignments'] as $user) {
+                                    echo "<li>" . $user['name'] . "</li>";
+                                }
+                                echo "</ul>";
+                            } else {
+                                echo "<h6>Unassigned</h6>";
+                            }
+                            echo "</div>";
                         } ?>
                     </div>
                 </div>
@@ -114,16 +128,44 @@ function getStatuses($db)
 
 function getActionGroups($db, $statuses)
 {
-    $actionGroups = [];
-    foreach ($statuses as $id => $status) {
-        $actionGroups[$id] = [];
+
+
+    $query = "SELECT
+                    a.action_id,
+                    a.name,
+                    CONCAT(o.first_name, ' ', o.last_name) owner,
+                    s.status_id,
+                    s.description,
+                    u.user_id,
+                    u.first_name,
+                    u.last_name
+                  FROM actions a 
+                    LEFT JOIN statuses s ON a.status_id = s.status_id 
+                    LEFT JOIN assignments asgn ON a.action_id = asgn.action_id
+                    LEFT JOIN users u ON asgn.user_id = u.user_id
+                    LEFT JOIN users o ON a.owner_id = o.user_id
+                  ORDER BY a.status_id";
+    $result = mysqli_query($db, $query);
+    $actions = [];
+    while ($row = $result->fetch_assoc()) {
+        $actions[$row["action_id"]]["name"] = $row["name"];
+        $actions[$row["action_id"]]["description"] = $row["description"];
+        $actions[$row["action_id"]]["owner"] = $row["owner"];
+        $actions[$row["action_id"]]["status_id"] = $row["status_id"];
+        if (isset($row['user_id'])) {
+            $actions[$row["action_id"]]["assignments"][$row["user_id"]] = array(
+                "name" => $row['first_name'] . ' ' . $row['last_name'],
+                "user_id" => $row["user_id"],
+            );
+        }
     }
 
-    $query = "SELECT * fROM actions";
-    $actionResult = mysqli_query($db, $query);
-    while ($row = $actionResult->fetch_assoc()) {
-        $statusId = $row['status_id'] ?: 1;
-        $actionGroups[$statusId][$row['action_id']] = $row['name'];
+    $actionGroups = [];
+    foreach ($statuses as $status_id => $status) {
+        $actionGroups[$status_id] = [];
+    }
+    foreach ($actions as $action_id => $action) {
+        $actionGroups[$action['status_id']][$action_id] = $action;
     }
     return $actionGroups;
 }
