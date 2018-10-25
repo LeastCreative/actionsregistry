@@ -13,44 +13,44 @@ USE actionsregistry;
 
 -- team table
 CREATE TABLE teams(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    team_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50)
 );
 
 -- user table
 CREATE TABLE users(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
     team_id INT,
     user_name VARCHAR(50) UNIQUE,
     first_name VARCHAR(100),
     last_name VARCHAR(100),
-    FOREIGN KEY(team_id) REFERENCES teams (id)
+    FOREIGN KEY(team_id) REFERENCES teams (team_id)
 );
 
 -- status table
 CREATE TABLE statuses(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    status_id INT PRIMARY KEY AUTO_INCREMENT,
     description VARCHAR(50)
 );
 
 -- ceremony table
 CREATE TABLE ceremonies(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    ceremony_id INT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(50)
 );
 
 -- actions table
 CREATE TABLE actions(
-    id INT PRIMARY KEY AUTO_INCREMENT,
+    action_id INT PRIMARY KEY AUTO_INCREMENT,
     owner_id INT,
     status_id INT,
     source_id INT,
     name VARCHAR(100),
-    created_date DATETIME,
-    updated_date DATETIME,
-    FOREIGN KEY(owner_id) REFERENCES users(id),
-	FOREIGN KEY(status_id) REFERENCES statuses(id),
-	FOREIGN KEY(source_id) REFERENCES ceremonies(id)
+    created_date DATETIME DEFAULT NOW(),
+    updated_date DATETIME DEFAULT NOW(),
+    FOREIGN KEY(owner_id) REFERENCES users(user_id),
+	FOREIGN KEY(status_id) REFERENCES statuses(status_id),
+	FOREIGN KEY(source_id) REFERENCES ceremonies(ceremony_id)
 );
 
 
@@ -58,8 +58,8 @@ CREATE TABLE actions(
 CREATE TABLE assignments(
     user_id INT NOT NULL,
     action_id INT NOT NULL,
-    FOREIGN KEY(user_id) REFERENCES users(id),
-    FOREIGN KEY(action_id) REFERENCES actions(id)
+    FOREIGN KEY(user_id) REFERENCES users(user_id),
+    FOREIGN KEY(action_id) REFERENCES actions(action_id)
 );
 
 
@@ -79,12 +79,12 @@ INSERT INTO users(
     last_name
 )
 VALUES
-    (1, 'jkunz', 'Jeff', 'Kunz'),
-    (1, 'thelvick', 'Tom', 'Helvick'),
-    (2, 'mtorres', 'Maria', 'Torres'),
+    (1, 'pmorrow', 'Portia', 'Morrow'),
+    (1, 'kmorin', 'Kristi', 'Morin'),
+    (2, 'tman', 'Test', 'Man'),
     (2, 'dclark', 'Dan', 'Clark'),
-    (3, 'pholmes', 'Pete', 'Holmes'),
-    (3, 'molivares', 'Marco', 'Olivares');
+    (3, 'otruong', 'Owen', 'Truong'),
+    (3, 'dlong', 'Darren', 'Long');
 
 INSERT INTO statuses(
     description
@@ -96,16 +96,45 @@ VALUES
     ('Resolved'),
     ('Obsoleted');
 
+
+INSERT INTO ceremonies(
+    name
+)
+VALUES
+    ('Sprint Planning'),
+    ('Backlog Grooming'),
+    ('Client Meeting'),
+    ('Research Session'),
+    ('Sprint Retrospective');
+
+
 INSERT INTO actions(
     name,
-    status_id
+    status_id,
+    source_id,
+    owner_id
 )
 Values
-    ('Do Work', 1),
-    ('Fix Bug', 1),
-    ('Implement Feature', 1),
-    ('Create Menu', 1),
-    ('Change Value', 1),
-    ('Make Things', 1),
-    ('Fix Data', 1),
-    ('Write Test', 1);
+    ('Do Work', 1, 1, 4),
+    ('Fix Bug', 1, 2, 4),
+    ('Implement Feature', 1, 1, 4),
+    ('Create Menu', 1, 3, 4),
+    ('Change Value', 1, 3, 4),
+    ('Make Things', 1, 5, 5),
+    ('Fix Data', 1, 2, 5),
+    ('Write Test', 1, 2, 5);
+
+INSERT INTO assignments(
+    user_id,
+    action_id
+)
+Values
+    (1, 2),
+    (2, 1),
+    (3, 3),
+    (4, 4),
+    (1, 4),
+    (2, 2);
+
+
+

@@ -16,13 +16,13 @@ $path = "controllers/$controller.php";
     <base href="<?= "/$app/" ?>">
 
     <link rel="stylesheet" type="text/css" href="content/css/bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" href="content/css/dataTables.bootstrap4.css"/>
+    <link rel="stylesheet" type="text/css" href="content/css/datatables.css"/>
     <link rel="stylesheet" type="text/css" href="content/css/site.css">
 
     <script type="text/javascript" src="content/js/jquery-3.3.1.js"></script>
     <script type="text/javascript" src="content/js/bootstrap.js"></script>
-    <script type="text/javascript" src="content/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" src="content/js/dataTables.bootstrap4.js"></script>
+    <script type="text/javascript" src="content/js/datatables.js"></script>
+    <script type="text/javascript" src="content/js/buttons.bootstrap4.js"></script>
 
     <title>Action Registry</title>
 

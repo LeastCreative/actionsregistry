@@ -5,7 +5,7 @@ switch ($action) {
      * shows index of all status records
      */
     case 'index':
-        $query = "SELECT *, u.id as user_id, t.name as team_name fROM users u LEFT JOIN teams t ON u.team_id = t.id";
+        $query = "SELECT *, t.name as team_name fROM users u LEFT JOIN teams t ON u.team_id = t.team_id";
         $result = mysqli_query($db, $query); ?>
         <h1>Users</h1>
         <table id="users" class="table table-striped table-bordered">
@@ -46,7 +46,7 @@ switch ($action) {
      * form to edit a status
      */
     case 'edit':
-        $query = "SELECT * fROM users where id = '$id'";
+        $query = "SELECT * fROM users where user_id = '$id'";
         $result = mysqli_query($db, $query);
         $row = $result->fetch_assoc();
 
@@ -54,29 +54,30 @@ switch ($action) {
         $teamResult = mysqli_query($db, $query);
         $teams = [];
         while ($team = $teamResult->fetch_assoc()) {
-            $teams[$team['id']] = $team['name'];
+            $teams[$team['team_id']] = $team['name'];
         }
         ?>
         <form action="users/update" method="post">
-            <input name="id" type="hidden" value="<?= $row['id'] ?>">
+            <input name="user_id" type="hidden" value="<?= $row['user_id'] ?>">
             <div class="form-group">
                 <label>User Name</label>
                 <input name="user_name" class="form-control" value="<?= $row['user_name'] ?>" readonly/>
             </div>
             <div class="form-group">
                 <label>First Name</label>
-                <input name="first_name" class="form-control" value="<?= $row['description'] ?>"/>
+                <input name="first_name" class="form-control" value="<?= $row['first_name'] ?>"/>
             </div>
             <div class="form-group">
                 <label>Last Name</label>
-                <input name="last_name" class="form-control" value="<?= $row['description'] ?>"/>
+                <input name="last_name" class="form-control" value="<?= $row['last_name'] ?>"/>
             </div>
             <div class="form-group">
-                <label>Description</label>
+                <label>Team</label>
                 <select name="team_id" class="form-control">
                     <option value='null'>None</option>
-                    <?php foreach ($teams as $id => $team) {
-                        echo "<option value='$id'>$team</option>";
+                    <?php foreach ($teams as $teamId => $team) {
+                        $selected = $teamId == $row['team_id'] ? 'selected' : '';
+                        echo "<option value='$teamId' $selected>$team</option>";
                     } ?>
                 </select>
             </div>
@@ -89,18 +90,19 @@ switch ($action) {
      * form to edit a status
      */
     case 'update':
-        if (isset($_POST['id']) && isset($_POST['first_name']) && isset($_POST['last_name']) && isset($_POST['team_id'])) {
+        if (isset($_POST['user_id']) && isset($_POST['first_name']) && isset($_POST['last_name']) && isset($_POST['team_id'])) {
             $first_name = mysqli_real_escape_string($db, $_POST['first_name']);
             $last_name = mysqli_real_escape_string($db, $_POST['last_name']);
             $team_id = mysqli_real_escape_string($db, $_POST['team_id']);
-            $id = mysqli_real_escape_string($db, $_POST['id']);
+            $id = mysqli_real_escape_string($db, $_POST['user_id']);
             $sql = "UPDATE users SET 
-                      first_name = '$first_name' 
-                      last_name = '$last_name' 
-                      team_id = $team_id 
-                    WHERE id = $id";
-            mysqli_query($db, $sql);
-            header('location: index');
+                      first_name = '$first_name', 
+                      last_name = '$last_name', 
+                      team_id = $team_id
+                    WHERE user_id = $id";
+            if (mysqli_query($db, $sql))
+                header('location: index');
+            else echo '500';
         } else {
             echo 'error';
         }

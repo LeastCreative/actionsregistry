@@ -107,7 +107,7 @@ function getStatuses($db)
     $statusResult = mysqli_query($db, $query);
     $statuses = [];
     while ($row = $statusResult->fetch_assoc()) {
-        $statuses[$row['id']] = $row['description'];
+        $statuses[$row['status_id']] = $row['description'];
     }
     return $statuses;
 }
@@ -123,7 +123,7 @@ function getActionGroups($db, $statuses)
     $actionResult = mysqli_query($db, $query);
     while ($row = $actionResult->fetch_assoc()) {
         $statusId = $row['status_id'] ?: 1;
-        $actionGroups[$statusId][$row['id']] = $row['name'];
+        $actionGroups[$statusId][$row['action_id']] = $row['name'];
     }
     return $actionGroups;
 }
