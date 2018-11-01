@@ -41,7 +41,7 @@ switch ($action) {
                 <th>Owner</th>
                 <th>Assigned To</th>
                 <th>Status</th>
-                <th></th>
+                <th style="white-space: nowrap; width: 0"></th>
             </tr>
             </thead>
             <tbody>
@@ -89,12 +89,41 @@ switch ($action) {
                     order: [],
                     dom: 'Bfrtip',
                     lengthChange: false,
-                    buttons: [{
-                        text: 'Add',
-                        action: function (e, dt, node, config) {
-                            window.location.href = "actions/new"
-                        }
-                    }]
+                    searching:false,
+                    buttons: [
+                        {
+                            extend: 'copy',
+                            exportOptions: {
+                                columns: 'th:not(:last-child)'
+                            }
+                        },                        {
+                            extend: 'csv',
+                            exportOptions: {
+                                columns: 'th:not(:last-child)'
+                            }
+                        },
+                        {
+                            extend: 'excel',
+                            exportOptions: {
+                                columns: 'th:not(:last-child)'
+                            }
+                        },
+                        {
+                            extend: 'pdf',
+                            exportOptions: {
+                                columns: 'th:not(:last-child)'
+                            }
+                        },
+                        {
+                            text: 'Add',
+                            className: "btn-success",
+                            action: function () {
+                                window.location.href = "actions/new"
+                            },
+                            init: function(api, node) {
+                                $(node).removeClass('btn-default')
+                            }
+                        }]
                 });
 
                 table.columns().every(function () {
@@ -105,6 +134,8 @@ switch ($action) {
                         }
                     });
                 });
+
+
             });
         </script>
         <?php

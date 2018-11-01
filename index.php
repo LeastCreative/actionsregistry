@@ -15,14 +15,24 @@ $path = "controllers/$controller.php";
 <head>
     <base href="<?= "/$app/" ?>">
 
-    <link rel="stylesheet" type="text/css" href="content/css/bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" href="content/css/datatables.css"/>
+    <link rel="stylesheet" type="text/css" href="content/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="content/css/dataTables.bootstrap4.min.css"/>
+    <link rel="stylesheet" type="text/css" href="content/css/buttons.bootstrap4.min.css"/>
     <link rel="stylesheet" type="text/css" href="content/css/site.css">
 
+
     <script type="text/javascript" src="content/js/jquery-3.3.1.js"></script>
-    <script type="text/javascript" src="content/js/bootstrap.js"></script>
-    <script type="text/javascript" src="content/js/datatables.js"></script>
-    <script type="text/javascript" src="content/js/buttons.bootstrap4.js"></script>
+    <script type="text/javascript" src="content/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="content/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="content/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="content/js/buttons.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="content/js/jszip.min.js"></script>
+    <script type="text/javascript" src="content/js/pdfmake.min.js"></script>
+    <script type="text/javascript" src="content/js/vfs_fonts.js"></script>
+    <script type="text/javascript" src="content/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="content/js/buttons.print.min.js"></script>
+    <script type="text/javascript" src="content/js/buttons.colVis.min.js"></script>
+
 
     <title>Action Registry</title>
 
@@ -34,24 +44,23 @@ $path = "controllers/$controller.php";
         }
 
         .nav a {
-            padding: 10px;
-            margin: 10px;
+            padding: 8px;
+            margin: 2px;
             background-color: #fff;
         }
     </style>
 </head>
 
-<body style="background-color: #30abff">
-<div style="text-align: center;">
+<body>
+<div style="width:100%;text-align:center;background-color: #30abff;">
     <div class="nav">
         <a href="home">Home</a>
         <a href="actions">Actions</a>
         <a href="statuses">Statuses</a>
         <a href="users">Users</a>
-        <a href="users">Teams</a>
     </div>
 </div>
-<div style="padding: 10px; width: 70%; margin: auto; background-color: #fff">
+<div style="padding:10px;width:90%;margin:auto;background-color:#fff">
 
     <?php
 

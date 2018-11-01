@@ -1,5 +1,6 @@
 <style>
     #statuses {
+        clear: both;
         width: 100%;
         height: 100%;
         box-sizing: padding-box;
@@ -19,7 +20,7 @@
         padding: 10px;
         border-top: #e2e6ea solid 15px;
         border-left: #e2e6ea solid 15px;
-        overflow-y:scroll;
+        overflow-y: scroll;
     }
 
     .actions {
@@ -73,23 +74,35 @@ switch ($action) {
 
         $statuses = getStatuses($db);
         $actionGroups = getActionGroups($db, $statuses);
+        $users = getUsers($db);
 
         ?>
-        <h1>Board</h1>
+        <h1 style="display: inline-block;">Board</h1>
+        <form class="form-inline float-right" style="margin-top: 10px;">
+            <div class="form-group">
+                <label for="user-filter"><b>Show items for:&nbsp;</b></label>
+                <select class="form-control" id="user-filter">
+                    <option value='all'>All</option>
+                    <?php foreach ($users as $userId => $userName) {
+                        echo "<option value='$userId'>$userName</option>";
+                    } ?>
+                </select>
+            </div>
+        </form>
         <div id="statuses">
-            <?php foreach ($statuses as $statusid => $status) { ?>
-                <div class="lane" ondrop="drop(event, <?= $statusid ?>)" ondragover="allowDrop(event)">
+            <?php foreach ($statuses as $statusId => $status) { ?>
+                <div class="lane" ondrop="drop(event, <?= $statusId ?>)" ondragover="allowDrop(event)">
                     <h3><?= $status ?></h3>
                     <div class="actions">
-                        <?php foreach ($actionGroups[$statusid] as $actionId => $action) {
+                        <?php foreach ($actionGroups[$statusId] as $actionId => $action) {
                             echo "<div id='$actionId' class='action' draggable='true' ondragstart='drag(event)'>";
                             echo "<h4>" . $action['name'] . "</h4>";
 
                             if (isset($action['assignments'])) {
                                 echo "<h6>Assigned To:</h6>";
                                 echo "<ul style='font-size: .75em'>";
-                                foreach ($action['assignments'] as $user) {
-                                    echo "<li>" . $user['name'] . "</li>";
+                                foreach ($action['assignments'] as $userId => $user) {
+                                    echo "<li class='user-$userId'>" . $user['name'] . "</li>";
                                 }
                                 echo "</ul>";
                             } else {
@@ -104,6 +117,20 @@ switch ($action) {
             <div style="clear: left"></div>
         </div>
 
+        <script>
+            $(document).ready(function () {
+                $('#user-filter').on('change', function () {
+                    var userId = $(this).val();
+                    if (userId == 'all') {
+                        //show all
+                        $(".action").show();
+                    } else {
+                        $(".action").hide();
+                        $(".user-" + userId).closest('.action').show();
+                    }
+                });
+            });
+        </script>
         <?php
         break;
 
@@ -168,6 +195,22 @@ function getActionGroups($db, $statuses)
         $actionGroups[$action['status_id']][$action_id] = $action;
     }
     return $actionGroups;
+}
+
+
+function getUsers($db)
+{
+    $query = "SELECT
+                u.user_id,
+                CONCAT(u.last_name, ' ', u.first_name) full_name
+              FROM users u 
+              ORDER BY u.last_name";
+    $result = mysqli_query($db, $query);
+    $users = [];
+    while ($row = $result->fetch_assoc()) {
+        $users[$row['user_id']] = $row['full_name'];
+    }
+    return $users;
 }
 
 

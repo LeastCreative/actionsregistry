@@ -5,7 +5,8 @@ switch ($action) {
      * shows index of all status records
      */
     case 'index':
-        $query = "SELECT * fROM statuses";
+        $query = "SELECT * 
+                  FROM statuses";
         $result = mysqli_query($db, $query); ?>
         <h1>Statuses</h1>
         <table id="statuses" class="table table-striped table-bordered">
@@ -40,7 +41,9 @@ switch ($action) {
      * form to edit a status
      */
     case 'edit':
-        $query = "SELECT * fROM statuses where status_id = '$id'";
+        $query = "SELECT * 
+                  FROM statuses 
+                  WHERE status_id = '$id'";
         $result = mysqli_query($db, $query);
         $row = $result->fetch_assoc();
         ?>
@@ -62,7 +65,9 @@ switch ($action) {
         if (isset($_POST['description']) && isset($_POST['statusId'])) {
             $description = mysqli_real_escape_string($db, $_POST['description']);
             $id = mysqli_real_escape_string($db, $_POST['statusId']);
-            $sql = "UPDATE statuses SET description = '$description' WHERE status_id = $id";
+            $sql = "UPDATE statuses 
+                    SET description = '$description' 
+                    WHERE status_id = $id";
             mysqli_query($db, $sql);
             header('location: index');
         } else {
