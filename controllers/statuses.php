@@ -30,12 +30,53 @@ switch ($action) {
         <script>
             $(document).ready(function () {
                 $("#statuses").DataTable({
-                    "order": []
+                    order: [],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        {
+                            text: 'Add',
+                            className: "btn-success",
+                            action: function () {
+                                window.location.href = "statuses/new"
+                            },
+                            init: function (api, node) {
+                                $(node).removeClass('btn-default')
+                            }
+                        }
+                    ]
                 });
             });
         </script>
         <?php
         break;
+
+    /**
+     * create a new status
+     */
+    case "new": ?>
+        <form action="statuses/create" method="post">
+            <div class="form-group">
+                <label>Description</label>
+                <input name="description" type="text" class="form-control">
+            </div>
+            <input type="submit">
+        </form>
+        <?php break;
+
+    /**
+     * create a new status
+     */
+    case "create":
+        if (isset($_POST['description'])) {
+            $description = mysqli_real_escape_string($db, $_POST['description']);
+            $sql = "INSERT INTO statuses(description) VALUES ('$description')";
+            mysqli_query($db, $sql);
+            header('location: index');
+        } else {
+            echo 'error';
+        }
+        break;
+
 
     /**
      * form to edit a status

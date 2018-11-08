@@ -1,11 +1,16 @@
 <style>
+
+    #status-content{
+        display: block;
+        width: 100%;
+        overflow-x: scroll;
+    }
+
     #statuses {
         clear: both;
-        width: 100%;
         height: 100%;
         box-sizing: padding-box;
-        border-bottom: #e2e6ea solid 15px;
-        border-right: #e2e6ea solid 15px;
+        display: flex;
     }
 
     .lane h3 {
@@ -13,16 +18,23 @@
     }
 
     .lane {
+        min-width: 300px;
         background-color: #ccc;
-        width: 20%;
-        height: 600px;
+        height: 750px;
         float: left;
         padding: 10px;
         border-top: #e2e6ea solid 15px;
         border-left: #e2e6ea solid 15px;
+        border-bottom: #e2e6ea solid 15px;
+
         overflow-y: scroll;
     }
 
+    div.lane:last-child{
+
+        border-right: #e2e6ea solid 15px;
+
+    }
     .actions {
 
     }
@@ -89,34 +101,36 @@ switch ($action) {
                 </select>
             </div>
         </form>
-        <div id="statuses">
-            <?php foreach ($statuses as $statusId => $status) { ?>
-                <div class="lane" ondrop="drop(event, <?= $statusId ?>)" ondragover="allowDrop(event)">
-                    <h3><?= $status ?></h3>
-                    <div class="actions">
-                        <?php foreach ($actionGroups[$statusId] as $actionId => $action) {
-                            echo "<div id='$actionId' class='action' draggable='true' ondragstart='drag(event)'>";
-                            echo "<h4>" . $action['name'] . "</h4>";
+        <div id="status-content">
 
-                            if (isset($action['assignments'])) {
-                                echo "<h6>Assigned To:</h6>";
-                                echo "<ul style='font-size: .75em'>";
-                                foreach ($action['assignments'] as $userId => $user) {
-                                    echo "<li class='user-$userId'>" . $user['name'] . "</li>";
+            <div id="statuses">
+                <?php foreach ($statuses as $statusId => $status) { ?>
+                    <div class="lane" ondrop="drop(event, <?= $statusId ?>)" ondragover="allowDrop(event)">
+                        <h3><?= $status ?></h3>
+                        <div class="actions">
+                            <?php foreach ($actionGroups[$statusId] as $actionId => $action) {
+                                echo "<div id='$actionId' class='action' draggable='true' ondragstart='drag(event)'>";
+                                echo "<h4>" . $action['name'] . "</h4>";
+
+                                if (isset($action['assignments'])) {
+                                    echo "<h6>Assigned To:</h6>";
+                                    echo "<ul style='font-size: .75em'>";
+                                    foreach ($action['assignments'] as $userId => $user) {
+                                        echo "<li class='user-$userId'>" . $user['name'] . "</li>";
+                                    }
+                                    echo "</ul>";
+                                } else {
+                                    echo "<h6>Unassigned</h6>";
                                 }
-                                echo "</ul>";
-                            } else {
-                                echo "<h6>Unassigned</h6>";
-                            }
-                            echo "</div>";
-                        } ?>
+                                echo "</div>";
+                            } ?>
+                        </div>
                     </div>
-                </div>
 
-            <?php } ?>
-            <div style="clear: left"></div>
+                <?php } ?>
+            </div>
+
         </div>
-
         <script>
             $(document).ready(function () {
                 $('#user-filter').on('change', function () {
