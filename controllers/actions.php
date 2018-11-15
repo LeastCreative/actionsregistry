@@ -60,6 +60,7 @@ switch ($action) {
                     <td><?= $action['description'] ?></td>
                     <td>
                         <a class="btn btn-sm btn-secondary" href="actions/edit/<?= $actionId ?>">Edit</a>
+                        <a class="btn btn-sm btn-warning" href="actions/archive/<?= $actionId ?>">Archive</a>
                         <a class="btn btn-sm btn-danger" href="actions/delete/<?= $actionId ?>">Delete</a>
                     </td>
                 </tr>
@@ -89,14 +90,14 @@ switch ($action) {
                     order: [],
                     dom: 'Bfrtip',
                     lengthChange: false,
-                    searching:false,
+                    searching: false,
                     buttons: [
                         {
                             extend: 'copy',
                             exportOptions: {
                                 columns: 'th:not(:last-child)'
                             }
-                        },                        {
+                        }, {
                             extend: 'csv',
                             exportOptions: {
                                 columns: 'th:not(:last-child)'
@@ -120,7 +121,7 @@ switch ($action) {
                             action: function () {
                                 window.location.href = "actions/new"
                             },
-                            init: function(api, node) {
+                            init: function (api, node) {
                                 $(node).removeClass('btn-default')
                             }
                         }]
@@ -166,7 +167,19 @@ switch ($action) {
         break;
 
     /**
-     * create a new action
+     * archive an existing action
+     */
+    case "archive":
+        $sql = "INSERT INTO actions_archive SELECT * FROM actions WHERE action_id = $id";
+        if (mysqli_query($db, $sql) != false) {
+            $sql = "DELETE FROM actions WHERE action_id = $id";
+            mysqli_query($db, $sql);
+        }
+        header('location: ..');
+        break;
+
+    /**
+     * delete an existing action
      */
     case "delete":
         $sql = "DELETE FROM actions WHERE action_id = $id";

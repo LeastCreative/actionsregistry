@@ -11,7 +11,9 @@ create a directory in your htdocs folder called "registry"
 create a new database in my php admin called "actionsregistry"
 run the following SQL script
 
---deploy and test data
+-- deploy and test data
+-- DROP DATABASE actionsregistry;
+-- CREATE DATABASE actionsregistry;
 USE actionsregistry;
 
 -- team table
@@ -52,8 +54,22 @@ CREATE TABLE actions(
     created_date DATETIME DEFAULT NOW(),
     updated_date DATETIME DEFAULT NOW(),
     FOREIGN KEY(owner_id) REFERENCES users(user_id),
-	FOREIGN KEY(status_id) REFERENCES statuses(status_id),
-	FOREIGN KEY(source_id) REFERENCES ceremonies(ceremony_id)
+    FOREIGN KEY(status_id) REFERENCES statuses(status_id),
+    FOREIGN KEY(source_id) REFERENCES ceremonies(ceremony_id)
+);
+
+-- action archive table
+CREATE TABLE actions_archive(
+    action_id INT PRIMARY KEY AUTO_INCREMENT,
+    owner_id INT,
+    status_id INT,
+    source_id INT,
+    name VARCHAR(100),
+    created_date DATETIME DEFAULT NOW(),
+    updated_date DATETIME DEFAULT NOW(),
+    FOREIGN KEY(owner_id) REFERENCES users(user_id),
+    FOREIGN KEY(status_id) REFERENCES statuses(status_id),
+    FOREIGN KEY(source_id) REFERENCES ceremonies(ceremony_id)
 );
 
 
