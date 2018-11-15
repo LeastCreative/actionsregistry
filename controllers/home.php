@@ -1,6 +1,6 @@
 <style>
 
-    #status-content{
+    #status-content {
         display: block;
         width: 100%;
         overflow-x: scroll;
@@ -30,11 +30,12 @@
         overflow-y: scroll;
     }
 
-    div.lane:last-child{
+    div.lane:last-child {
 
         border-right: #e2e6ea solid 15px;
 
     }
+
     .actions {
 
     }
@@ -85,20 +86,35 @@ switch ($action) {
     case 'index':
 
         $statuses = getStatuses($db);
+        $teams = getTeams($db);
         $actionGroups = getActionGroups($db, $statuses);
         $users = getUsers($db);
+        $teamName = getTeamName($db);
+
+        echo '<h1 style="display: inline-block;">Board';
+        if (isset($teamName)) {
+            echo ' - ' . $teamName;
+        }
+        echo '</h1>';
 
         ?>
-        <h1 style="display: inline-block;">Board</h1>
         <form class="form-inline float-right" style="margin-top: 10px;">
             <div class="form-group">
-                <label for="user-filter"><b>Show items for:&nbsp;</b></label>
-                <select class="form-control" id="user-filter">
-                    <option value='all'>All</option>
-                    <?php foreach ($users as $userId => $userName) {
-                        echo "<option value='$userId'>$userName</option>";
-                    } ?>
-                </select>
+                <label><b>Show items for:&nbsp;</b>
+                    <select class="form-control" id="team-filter" style="margin-right: 5px">
+                        <option value='all'>All Teams</option>
+                        <?php foreach ($teams as $teamId => $teamName) {
+                            $selected = isset($_GET['teamId']) && $_GET['teamId'] == $teamId ? 'selected' : '';
+                            echo "<option value='$teamId' $selected>$teamName</option>";
+                        } ?>
+                    </select>
+                    <select class="form-control" id="user-filter">
+                        <option value='all'>All Users</option>
+                        <?php foreach ($users as $userId => $userName) {
+                            echo "<option value='$userId'>$userName</option>";
+                        } ?>
+                    </select>
+                </label>
             </div>
         </form>
         <div id="status-content">
@@ -143,6 +159,17 @@ switch ($action) {
                         $(".user-" + userId).closest('.action').show();
                     }
                 });
+                $('#team-filter').on('change', function () {
+                    var teamId = $(this).val();
+                    var query;
+                    if (teamId == 'all') {
+                        //show all
+                        query = ""
+                    } else {
+                        query = "?" + $.param({'teamId': teamId});
+                    }
+                    window.location.href = window.location.pathname + query;
+                });
             });
         </script>
         <?php
@@ -154,6 +181,20 @@ switch ($action) {
     default:
         echo 404;
 
+}
+
+function getTeamName($db)
+{
+    if (isset($_GET['teamId'])) {
+
+        $teamId = mysqli_real_escape_string($db, $_GET['teamId']);
+
+        $query = "SELECT name fROM teams where team_id = $teamId";
+        $statusResult = mysqli_query($db, $query);
+        $row = $statusResult->fetch_assoc();
+        return $row['name'];
+    }
+    return null;
 }
 
 function getStatuses($db)
@@ -170,6 +211,11 @@ function getStatuses($db)
 function getActionGroups($db, $statuses)
 {
 
+    $where_clause = '';
+    if (isset($_GET["teamId"])) {
+        $teamId = mysqli_real_escape_string($db, $_GET['teamId']);
+        $where_clause = 'WHERE u.team_id = ' . $teamId;
+    }
 
     $query = "SELECT
                     a.action_id,
@@ -185,6 +231,7 @@ function getActionGroups($db, $statuses)
                     LEFT JOIN assignments asgn ON a.action_id = asgn.action_id
                     LEFT JOIN users u ON asgn.user_id = u.user_id
                     LEFT JOIN users o ON a.owner_id = o.user_id
+                  $where_clause
                   ORDER BY a.status_id";
     $result = mysqli_query($db, $query);
     $actions = [];
@@ -212,12 +259,31 @@ function getActionGroups($db, $statuses)
 }
 
 
+function getTeams($db)
+{
+    $query = "SELECT * fROM teams";
+    $teamResult = mysqli_query($db, $query);
+    $teams = [];
+    while ($row = $teamResult->fetch_assoc()) {
+        $teams[$row['team_id']] = $row['name'];
+    }
+    return $teams;
+}
+
+
 function getUsers($db)
 {
+    $where_clause = '';
+    if (isset($_GET["teamId"])) {
+        $teamId = mysqli_real_escape_string($db, $_GET['teamId']);
+        $where_clause = 'WHERE u.team_id = ' . $teamId;
+    }
+
     $query = "SELECT
                 u.user_id,
                 CONCAT(u.last_name, ' ', u.first_name) full_name
               FROM users u 
+              $where_clause
               ORDER BY u.last_name";
     $result = mysqli_query($db, $query);
     $users = [];

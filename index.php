@@ -3,6 +3,7 @@ require 'config.php';
 $app = 'registry';
 $root = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . "/$app/";
 $requestUri = str_replace("/$app", '', $_SERVER['REQUEST_URI']);
+$requestUri = explode('?', $requestUri)[0];
 $uri_segments = explode('/', $requestUri);
 $controller = !empty($uri_segments[1]) ? $uri_segments[1] : 'home';
 $action = !empty($uri_segments[2]) ? $uri_segments[2] : 'index';
@@ -63,7 +64,6 @@ $path = "controllers/$controller.php";
 <div style="padding:10px;width:90%;margin:auto;background-color:#fff">
 
     <?php
-
     if (file_exists($path)) {
         include($path);
     } else {
