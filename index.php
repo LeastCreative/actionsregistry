@@ -82,7 +82,7 @@ $path = "controllers/$controller.php";
         <a href="statuses">Statuses</a>
         <a href="users">Users</a>
         <div class="dropdown">
-            Dropdown
+            Admin
             <div class="dropdown-content">
                 <a href="admin/import">Import</a>
                 <a href="admin/export">Export</a>
