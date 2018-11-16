@@ -48,7 +48,7 @@ CREATE TABLE ceremonies(
 CREATE TABLE actions(
     action_id INT PRIMARY KEY AUTO_INCREMENT,
     owner_id INT,
-    status_id INT,
+    status_id INT NOT NULL,
     source_id INT,
     name VARCHAR(100),
     created_date DATETIME DEFAULT NOW(),
@@ -62,7 +62,7 @@ CREATE TABLE actions(
 CREATE TABLE actions_archive(
     action_id INT PRIMARY KEY AUTO_INCREMENT,
     owner_id INT,
-    status_id INT,
+    status_id INT NOT NULL,
     source_id INT,
     name VARCHAR(100),
     created_date DATETIME DEFAULT NOW(),

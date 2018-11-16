@@ -33,7 +33,7 @@ switch ($action) {
             }
         }
         ?>
-        <h1>Actions</h1>
+        <h1>List</h1>
         <table id="actions" class="table table-striped table-bordered">
             <thead>
             <tr>
@@ -158,7 +158,7 @@ switch ($action) {
     case "create":
         if (isset($_POST['name'])) {
             $name = mysqli_real_escape_string($db, $_POST['name']);
-            $sql = "INSERT INTO actions(name, created_date, updated_date) VALUES ('$name', NOW(), NOW())";
+            $sql = "INSERT INTO actions(name, status_id, created_date, updated_date) VALUES ('$name', 1, NOW(), NOW())";
             mysqli_query($db, $sql);
             header('location: index');
         } else {

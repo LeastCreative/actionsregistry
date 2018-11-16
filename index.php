@@ -44,11 +44,33 @@ $path = "controllers/$controller.php";
             padding: 20px
         }
 
-        .nav a {
+        .nav a, .nav div {
             padding: 8px;
             margin: 2px;
             background-color: #fff;
+            color: #007bff;
         }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            display: block;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+
     </style>
 </head>
 
@@ -56,9 +78,18 @@ $path = "controllers/$controller.php";
 <div style="width:100%;text-align:center;background-color: #30abff;">
     <div class="nav">
         <a href="home">Home</a>
-        <a href="actions">Actions</a>
+        <a href="actions">List</a>
         <a href="statuses">Statuses</a>
         <a href="users">Users</a>
+        <div class="dropdown">
+            Dropdown
+            <div class="dropdown-content">
+                <a href="admin/import">Import</a>
+                <a href="admin/export">Export</a>
+                <a href="admin/config">Configure</a>
+                <a href="admin/reports">Reports</a>
+            </div>
+        </div>
     </div>
 </div>
 <div style="padding:10px;width:90%;margin:auto;background-color:#fff">
