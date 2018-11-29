@@ -7,7 +7,6 @@ ____ ____ ___ _ ____ _  _    ____ ____ ____ _ ____ ___ ____ _   _
 
 Installation Instructions
 
-create a directory in your htdocs folder called "registry"
 create a new database in my php admin called "actionsregistry"
 run the following SQL script
 

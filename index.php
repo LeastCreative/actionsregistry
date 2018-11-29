@@ -1,20 +1,23 @@
 <?php
 require 'config.php';
-$app = 'registry';
-$root = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . "/$app/";
-$requestUri = str_replace("/$app", '', $_SERVER['REQUEST_URI']);
-$requestUri = explode('?', $requestUri)[0];
-$uri_segments = explode('/', $requestUri);
-$controller = !empty($uri_segments[1]) ? $uri_segments[1] : 'home';
-$action = !empty($uri_segments[2]) ? $uri_segments[2] : 'index';
-$id = !empty($uri_segments[3]) ? $uri_segments[3] : null;
-$path = "controllers/$controller.php";
-?>
 
+//get rewritten url
+$requestUri = !empty($_GET['uri']) ? $_GET['uri'] : '';
+$uri_segments = explode('/', $requestUri);
+
+//parse segments
+$controller = !empty($uri_segments[0]) ? $uri_segments[0] : 'home';
+$action = !empty($uri_segments[1]) ? $uri_segments[1] : 'index';
+$id = !empty($uri_segments[2]) ? $uri_segments[2] : null;
+
+//path to controller file
+$path = "controllers/$controller.php";
+$base = str_ireplace($requestUri, '', $_SERVER['REQUEST_URI'])
+?>
 
 <!DOCTYPE html>
 <head>
-    <base href="<?= "/$app/" ?>">
+    <base href="<?= $base ?>">
 
     <link rel="stylesheet" type="text/css" href="content/css/bootstrap.min.css"/>
     <link rel="stylesheet" type="text/css" href="content/css/dataTables.bootstrap4.min.css"/>
@@ -33,7 +36,6 @@ $path = "controllers/$controller.php";
     <script type="text/javascript" src="content/js/buttons.html5.min.js"></script>
     <script type="text/javascript" src="content/js/buttons.print.min.js"></script>
     <script type="text/javascript" src="content/js/buttons.colVis.min.js"></script>
-
 
     <title>Action Registry</title>
 
@@ -93,14 +95,16 @@ $path = "controllers/$controller.php";
     </div>
 </div>
 <div style="padding:10px;width:90%;margin:auto;background-color:#fff">
-
     <?php
     if (file_exists($path)) {
         include($path);
     } else {
+        http_response_code(404);
         echo "$path not found";
     }
-
     ?>
 </div>
 </body>
+
+
+

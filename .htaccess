@@ -1,1 +1,9 @@
-FallbackResource /registry/index.php
+Options -MultiViews
+RewriteEngine On
+
+#if not directory and not file
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+#redirect to index with request uri
+RewriteRule ^(.+)$ index.php?uri=$1 [QSA,L]
