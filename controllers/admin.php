@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 switch ($action) {
     /**
      * shows index of admin page
@@ -10,9 +10,64 @@ switch ($action) {
     case    'export':
         echo '<h1>Admin - Export</h1>';
         break;
+
+    /**
+     * shows config page
+     */
     case    'config':
-        echo '<h1>Admin - Configuration</h1>';
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if(!empty($_POST['team_id']))
+                if(!empty($_POST['team_id']))
+                    $config = [];
+                    $config['team_id'] = $_POST['team_id'];
+                    $_SESSION['config'] = $config;
+            break;
+        }
+
+
+        $config = [];
+        if (!empty($_SESSION['config']))
+            $config = $_SESSION['config'];
+
+
+
+        $query = "SELECT
+                    team_id,
+                    name
+                  FROM teams t
+                  ORDER BY t.name";
+
+        $result = mysqli_query($db, $query);
+
+        $teams = [];
+        while ($row = $result->fetch_assoc()) {
+            $teams[$row['team_id']] = $row['name'];
+        }
+
+        ?>
+        <h1>Admin - Configuration</h1>
+        <form action="admin/config" method="post">
+            <div class="form-group">
+                <label>Active Team</label>
+                <select name="team_id" class="form-control">
+                    <option value='null'>None</option>
+                    <?php foreach ($teams as $teamId => $team) {
+                        $selected = $teamId == $config['team_id'] ? 'selected' : '';
+                        echo "<option value='$teamId' $selected>$team</option>";
+                    } ?>
+                </select>
+            </div>
+            <input type="submit">
+        </form>
+        <?php
+
+
         break;
+
+    /**
+     * reports page
+     */
     case      'reports':
         echo '<h1>Admin - Reports</h1>';
 
@@ -82,7 +137,7 @@ switch ($action) {
                 // Set chart options
                 var options = {
                     title: 'Actions by Assignee',
-                    'height':600
+                    'height': 600
                 };
 
                 var chart = new google.visualization.BarChart(document.getElementById('assigned-chart'));
@@ -100,7 +155,7 @@ switch ($action) {
                 // Set chart options
                 var options = {
                     title: 'Actions by Status',
-                    'height':600
+                    'height': 600
                 };
 
                 var chart = new google.visualization.BarChart(document.getElementById('status-chart'));
