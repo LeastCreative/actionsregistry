@@ -1,0 +1,31 @@
+.nav {
+    display: inline-block;
+    margin: 0 auto;
+    padding: 20px
+}
+
+.nav a, .nav div {
+    padding: 8px;
+    margin: 2px;
+    background-color: #fff;
+    color: #007bff;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    z-index: 1;
+}
+
+.dropdown-content a {
+    display: block;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}

@@ -1,6 +1,7 @@
 <?php
+session_start();
 require 'config.php';
-
+require 'lib/Controller.php';
 //get rewritten url
 $requestUri = !empty($_GET['uri']) ? $_GET['uri'] : '';
 $uri_segments = explode('/', $requestUri);
@@ -23,6 +24,7 @@ $base = str_ireplace($requestUri, '', $_SERVER['REQUEST_URI'])
     <link rel="stylesheet" type="text/css" href="content/css/dataTables.bootstrap4.min.css"/>
     <link rel="stylesheet" type="text/css" href="content/css/buttons.bootstrap4.min.css"/>
     <link rel="stylesheet" type="text/css" href="content/css/site.css">
+    <link rel="stylesheet" type="text/css" href="content/css/board.css"/>
 
 
     <script type="text/javascript" src="content/js/jquery-3.3.1.js"></script>
@@ -39,41 +41,6 @@ $base = str_ireplace($requestUri, '', $_SERVER['REQUEST_URI'])
 
     <title>Action Registry</title>
 
-    <style>
-        .nav {
-            display: inline-block;
-            margin: 0 auto;
-            padding: 20px
-        }
-
-        .nav a, .nav div {
-            padding: 8px;
-            margin: 2px;
-            background-color: #fff;
-            color: #007bff;
-        }
-
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            z-index: 1;
-        }
-
-        .dropdown-content a {
-            display: block;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-
-    </style>
 </head>
 
 <body>
@@ -96,12 +63,19 @@ $base = str_ireplace($requestUri, '', $_SERVER['REQUEST_URI'])
 </div>
 <div style="padding:10px;width:90%;margin:auto;background-color:#fff">
     <?php
-    if (file_exists($path)) {
-        include($path);
-    } else {
-        http_response_code(404);
-        echo "$path not found";
-    }
+    $factory = new ControllerFactory();
+    $controllerObj = $factory->get_controller($controller, $action);
+    if (!empty($controllerObj)) {
+        echo $controllerObj->$action($id);
+    } else
+        echo 'echo';
+
+    //if (file_exists($path)) {
+    //    include($path);
+    //} else {
+    //    http_response_code(404);
+    //    echo "$path not found";
+    //}
     ?>
 </div>
 </body>

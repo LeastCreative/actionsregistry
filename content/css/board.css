@@ -1,0 +1,46 @@
+#status-content {
+    display: block;
+    width: 100%;
+    overflow-x: scroll;
+}
+
+#status-content #statuses {
+    clear: both;
+    height: 100%;
+    box-sizing: padding-box;
+    display: flex;
+}
+
+.lane h3 {
+    white-space: nowrap;
+}
+
+.lane {
+    min-width: 300px;
+    background-color: #ccc;
+    height: 750px;
+    float: left;
+    padding: 10px;
+    border-top: #e2e6ea solid 15px;
+    border-left: #e2e6ea solid 15px;
+    border-bottom: #e2e6ea solid 15px;
+
+    overflow-y: scroll;
+}
+
+div.lane:last-child {
+
+    border-right: #e2e6ea solid 15px;
+
+}
+
+.actions {
+
+}
+
+.action {
+    background-color: #e2e6ea;
+    margin-bottom: 10px;
+    padding: 5px;
+    font-weight: bold;
+}
