@@ -31,7 +31,7 @@ class HomeController extends Controller
         $db = $this->db;
         $teamId = $this->getTeamId();
 
-        if (!empty($teamId)) {
+        if (!empty($teamId) && $teamId != 'all') {
             $query = "SELECT name fROM teams where team_id = $teamId";
             $result = mysqli_query($db, $query);
             $row = $result->fetch_assoc();
@@ -60,9 +60,20 @@ class HomeController extends Controller
         $db = $this->db;
         $where_clause = '';
         $teamId = $this->getTeamId();
-        if (isset($teamId)) {
+        if (isset($teamId) && $teamId != 'all') {
             $where_clause = 'WHERE u.team_id = ' . $teamId;
         }
+
+        //check config
+        $expirationDays = null;
+        if (!empty($_SESSION['config'])) {
+            $config = $_SESSION['config'];
+            if (!empty($config['max_action_age'])) {
+                $expirationDays = $config['max_action_age'] + 0;
+            }
+
+        }
+
 
         $query = "SELECT
                     a.action_id,
@@ -72,7 +83,12 @@ class HomeController extends Controller
                     s.description,
                     u.user_id,
                     u.first_name,
-                    u.last_name
+                    u.last_name,
+                    CASE
+                        WHEN a.created_date BETWEEN DATE_SUB(NOW(), INTERVAL $expirationDays DAY) AND NOW()
+                          THEN 0
+                        ELSE 1
+                    END as expired
                   FROM actions a 
                     LEFT JOIN statuses s ON a.status_id = s.status_id 
                     LEFT JOIN assignments asgn ON a.action_id = asgn.action_id
@@ -80,13 +96,14 @@ class HomeController extends Controller
                     LEFT JOIN users o ON a.owner_id = o.user_id
                   $where_clause
                   ORDER BY a.status_id";
-        $result = mysqli_query($db, $query);
+        $result = $this->query($query);
         $actions = [];
         while ($row = $result->fetch_assoc()) {
             $actions[$row["action_id"]]["name"] = $row["name"];
             $actions[$row["action_id"]]["description"] = $row["description"];
             $actions[$row["action_id"]]["owner"] = $row["owner"];
             $actions[$row["action_id"]]["status_id"] = $row["status_id"];
+            $actions[$row["action_id"]]["expired"] = $row["expired"] == '1' ? true : false;
             if (isset($row['user_id'])) {
                 $actions[$row["action_id"]]["assignments"][$row["user_id"]] = array(
                     "name" => $row['first_name'] . ' ' . $row['last_name'],
@@ -126,7 +143,7 @@ class HomeController extends Controller
         $db = $this->db;
         $where_clause = '';
         $teamId = $this->getTeamId();
-        if ($teamId) {
+        if ($teamId && $teamId != 'all') {
             $where_clause = 'WHERE u.team_id = ' . $teamId;
         }
 

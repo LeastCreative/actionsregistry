@@ -51,7 +51,7 @@ class IndexView
                         <div class="actions">
                             <?php foreach ($actionGroups[$statusId] as $actionId => $action) {
                                 echo "<div id='$actionId' class='action' draggable='true' ondragstart='drag(event)'>";
-                                echo "<h4>" . $action['name'] . "</h4>";
+                                echo "<h4 " . ($action['expired'] ? 'style="background-color:lightyellow"' : '') . ">" . $action['name'] . "</h4>";
 
                                 if (isset($action['assignments'])) {
                                     echo "<h6>Assigned To:</h6>";
@@ -86,13 +86,7 @@ class IndexView
                 });
                 $('#team-filter').on('change', function () {
                     var teamId = $(this).val();
-                    var query;
-                    if (teamId == 'all') {
-                        //show all
-                        query = ""
-                    } else {
-                        query = "?" + $.param({'teamId': teamId});
-                    }
+                    var query = "?" + $.param({'teamId': teamId});
                     window.location.href = window.location.pathname + query;
                 });
             });

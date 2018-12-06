@@ -32,11 +32,15 @@ class AdminController extends Controller
 
         $db = $this->db;
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (!empty($_POST['team_id']))
-                if (!empty($_POST['team_id']))
-                    $config = [];
-            $config['team_id'] = $_POST['team_id'];
+            $this->requireFields('team_id', 'max_action_age');
+
+            $config = [];
+            if($_POST['team_id'] != 'null'){
+                $config['team_id'] = $_POST['team_id'];
+            }
+            $config['max_action_age'] = $_POST['max_action_age'];
             $_SESSION['config'] = $config;
+            echo '<p class="text-success">config saved successfully</p>';
         }
 
         $config = [];
@@ -110,8 +114,6 @@ class AdminController extends Controller
             $status[] = intval($row['action_count']);
             $statuses[] = $status;
         }
-
-
 
 
         $this->render_view();
