@@ -51,20 +51,57 @@ class ActionsController extends Controller
 
     public function add()
     {
-        $this->render_view();
+        //get users
+        $query = "SELECT * fROM users ORDER BY last_name";
+        $userResult = $this->query($query);
+        $users = [];
+        while ($user = $userResult->fetch_assoc()) {
+            $users[$user['user_id']] = $user['last_name'] . ', ' . $user['first_name'];
+        }
+
+        //get statuses
+        $query = "SELECT * fROM statuses";
+        $statusResult = $this->query($query);
+        $statuses = [];
+        while ($status = $statusResult->fetch_assoc()) {
+            $statuses[$status['status_id']] = $status['description'];
+        }
+
+        //get sources
+        $query = "SELECT * fROM ceremonies";
+        $sourceResult = $this->query($query);
+        $sources = [];
+        while ($source = $sourceResult->fetch_assoc()) {
+            $sources[$source['ceremony_id']] = $source['name'];
+        }
+
+        //setup view model
+        $model = new stdClass();
+        $model->users = $users;
+        $model->statuses = $statuses;
+        $model->sources = $sources;
+        $this->render_view($model);
     }
 
     public function create()
     {
-        if (isset($_POST['name'])) {
-            $name = $this->escape('name');
-            $sql = "INSERT INTO actions(name, status_id, created_date, updated_date) VALUES ('$name', 1, NOW(), NOW())";
-            $this->query($sql);
+        $this->requireFields(
+            'name',
+            'owner_id',
+            'status_id'
+        );
 
-            $this->redirect('index');
-        } else {
-            echo 'error';
-        }
+        $name = $this->escape('name');
+        $ownerId = $this->escape('owner_id');
+        $statusId = $this->escape('status_id');
+        $sourceId = $this->escape('source_id');
+
+
+        $sql = "INSERT INTO actions(name, owner_id, status_id, source_id, created_date, updated_date)
+                    VALUES  ('$name', $ownerId, $statusId, $sourceId, NOW(), NOW())";
+
+        $this->query($sql);
+        $this->redirect('index');
     }
 
     public function archive($id)
@@ -91,6 +128,7 @@ class ActionsController extends Controller
                     a.action_id,
                     a.name,
                     a.owner_id,
+                    a.source_id,
                     s.status_id,
                     u.user_id,
                     u.first_name + ' ' + u.last_name as assigned_name
@@ -102,9 +140,11 @@ class ActionsController extends Controller
         $result = $this->query($query);
         $action = [];
         while ($row = $result->fetch_assoc()) {
+            $action["action_id"] = $row["action_id"];
             $action["name"] = $row["name"];
             $action["status_id"] = $row["status_id"];
             $action["owner_id"] = $row["owner_id"];
+            $action["source_id"] = $row["source_id"];
             if (isset($row['user_id'])) {
                 $action["assignments"][$row["user_id"]] = array(
                     "name" => $row['assigned_name'],
@@ -129,30 +169,48 @@ class ActionsController extends Controller
             $statuses[$status['status_id']] = $status['description'];
         }
 
+        //get sources
+        $query = "SELECT * fROM ceremonies";
+        $sourceResult = $this->query($query);
+        $sources = [];
+        while ($source = $sourceResult->fetch_assoc()) {
+            $sources[$source['ceremony_id']] = $source['name'];
+        }
+
         //setup view model
         $model = new stdClass();
         $model->id = $id;
         $model->action = $action;
         $model->users = $users;
         $model->statuses = $statuses;
+        $model->sources = $sources;
         $this->render_view($model);
     }
 
     public function update($id)
     {
-        if (isset($_POST['name']) && isset($_POST['statusid'])) {
-            $name = $this->escape('name');
-            $statusid = $this->escape('statusid');
-            $sql = "UPDATE actions 
+        $this->requireFields(
+            'name',
+            'owner_id',
+            'status_id'
+        );
+
+        $name = $this->escape('name');
+        $ownerId = $this->escape('owner_id');
+        $statusId = $this->escape('status_id');
+        $sourceId = $this->escape('source_id');
+
+
+        $sql = "UPDATE actions 
                     SET 
                       name = '$name',
-                      status_id = $statusid,
+                      owner_id = $ownerId,
+                      status_id = $statusId,
+                      status_id = $sourceId,
                       updated_date = NOW()
-                    WHERE action_id = '$id'";
-            $this->query($sql);
-            $this->redirect('index');
-        } else {
-            echo 'error';
-        }
+                    WHERE action_id = $id";
+        $this->query($sql);
+        $this->redirect('..');
+
     }
 }

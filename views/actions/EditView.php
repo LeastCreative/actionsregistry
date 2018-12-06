@@ -10,21 +10,20 @@ class EditView
 {
     function render($model)
     {
-        $id = $model->id;
         $action = $model->action;
         $users = $model->users;
         $statuses = $model->statuses;
+        $sources = $model->sources;
 
         ?>
-        <form action="actions/update" method="post">
-            <input name="id" type="hidden" value="<?= $id ?>">
+        <form action="actions/update/<?= $action['action_id'] ?>" method="post">
             <div class="form-group">
                 <label>Name</label>
                 <input name="name" class="form-control" value="<?= $action['name'] ?>">
             </div>
             <div class="form-group">
                 <label>Owner</label>
-                <select name="ownerId" class="form-control">
+                <select name="owner_id" class="form-control">
                     <?php foreach ($users as $userId => $user) {
                         $selected = $userId == $action['owner_id'] ? 'selected' : '';
                         echo "<option value='$userId' $selected>$user</option>";
@@ -32,10 +31,19 @@ class EditView
                 </select></div>
             <div class="form-group">
                 <label>Status</label>
-                <select name="statusId" class="form-control">
+                <select name="status_id" class="form-control">
                     <?php foreach ($statuses as $statusId => $status) {
                         $selected = $statusId == $action['status_id'] ? 'selected' : '';
                         echo "<option value='$statusId' $selected>$status</option>";
+                    } ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Source</label>
+                <select name="source_id" class="form-control">
+                    <?php foreach ($sources as $sourceId => $source) {
+                        $selected = $sourceId == $action['source_id'] ? 'selected' : '';
+                        echo "<option value='$sourceId' $selected>$source</option>";
                     } ?>
                 </select>
             </div>
