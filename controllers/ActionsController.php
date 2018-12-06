@@ -17,19 +17,23 @@ class ActionsController extends Controller
                     s.description,
                     u.user_id,
                     u.first_name,
-                    u.last_name
+                    u.last_name,
+                    DATE_FORMAT(a.created_date , '%m/%d/%Y') as created_date,
+                    DATE_FORMAT(a.updated_date, '%m/%d/%Y') as updated_date
                   FROM actions a 
                     LEFT JOIN statuses s ON a.status_id = s.status_id 
                     LEFT JOIN assignments asgn ON a.action_id = asgn.action_id
                     LEFT JOIN users u ON asgn.user_id = u.user_id
                     LEFT JOIN users o ON a.owner_id = o.user_id
-                  ORDER BY a.status_id";
+                  ORDER BY a.created_date, a.action_id";
         $result = $this->query($query);
         $actions = [];
         while ($row = $result->fetch_assoc()) {
             $actions[$row["action_id"]]["name"] = $row["name"];
             $actions[$row["action_id"]]["description"] = $row["description"];
             $actions[$row["action_id"]]["owner"] = $row["owner"];
+            $actions[$row["action_id"]]["created_date"] = $row["created_date"];
+            $actions[$row["action_id"]]["updated_date"] = $row["updated_date"];
             if (isset($row['user_id'])) {
                 $actions[$row["action_id"]]["assignments"][$row["user_id"]] = array(
                     "name" => $row['first_name'] . ' ' . $row['last_name'],

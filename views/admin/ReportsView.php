@@ -10,6 +10,8 @@ class ReportsView
 {
     function render($model)
     {
+        $assignees = $model->assignees;
+        $statuses = $model->statuses;
         ?>
         <h1>Admin - Reports</h1>
         <div id="assigned-chart"></div>
@@ -34,7 +36,8 @@ class ReportsView
                 // Set chart options
                 var options = {
                     title: 'Actions by Assignee',
-                    'height': 600
+                    'height': 600,
+                    hAxis: {format: '0'}
                 };
 
                 var chart = new google.visualization.BarChart(document.getElementById('assigned-chart'));
@@ -52,7 +55,8 @@ class ReportsView
                 // Set chart options
                 var options = {
                     title: 'Actions by Status',
-                    'height': 600
+                    'height': 600,
+                    hAxis: {format: '0'}
                 };
 
                 var chart = new google.visualization.BarChart(document.getElementById('status-chart'));

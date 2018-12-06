@@ -35,7 +35,7 @@ class AdminController extends Controller
             $this->requireFields('team_id', 'max_action_age');
 
             $config = [];
-            if($_POST['team_id'] != 'null'){
+            if ($_POST['team_id'] != 'null') {
                 $config['team_id'] = $_POST['team_id'];
             }
             $config['max_action_age'] = $_POST['max_action_age'];
@@ -86,7 +86,7 @@ class AdminController extends Controller
                   GROUP BY asgn.user_id
                   ORDER BY u.last_name";
 
-        $result = mysqli_query($db, $query);
+        $result = $this->query($query);
 
         $assignees = [];
         while ($row = $result->fetch_assoc()) {
@@ -105,7 +105,7 @@ class AdminController extends Controller
                   GROUP BY a.status_id
                   ORDER BY s.status_id";
 
-        $result = mysqli_query($db, $query);
+        $result = $this->query($query);
 
         $statuses = [];
         while ($row = $result->fetch_assoc()) {
@@ -115,8 +115,11 @@ class AdminController extends Controller
             $statuses[] = $status;
         }
 
-
-        $this->render_view();
+        //setup view model
+        $model = new stdClass();
+        $model->assignees = $assignees;
+        $model->statuses = $statuses;
+        $this->render_view($model);
     }
 
 }

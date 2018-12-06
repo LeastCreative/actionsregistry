@@ -23,6 +23,8 @@ class IndexView
                 <th>Owner</th>
                 <th>Assigned To</th>
                 <th>Status</th>
+                <th>Created</th>
+                <th>Updated</th>
                 <th style="white-space: nowrap; width: 0"></th>
             </tr>
             </thead>
@@ -40,6 +42,8 @@ class IndexView
                         ?>
                     </td>
                     <td><?= $action['description'] ?></td>
+                    <td><?= $action['created_date'] ?></td>
+                    <td><?= $action['updated_date'] ?></td>
                     <td>
                         <a class="btn btn-sm btn-secondary" href="actions/edit/<?= $actionId ?>">Edit</a>
                         <a class="btn btn-sm btn-warning" href="actions/archive/<?= $actionId ?>">Archive</a>
