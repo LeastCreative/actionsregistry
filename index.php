@@ -67,15 +67,11 @@ $base = str_ireplace($requestUri, '', $_SERVER['REQUEST_URI'])
     $controllerObj = $factory->get_controller($controller, $action);
     if (!empty($controllerObj)) {
         echo $controllerObj->$action($id);
-    } else
-        echo 'echo';
-
-    //if (file_exists($path)) {
-    //    include($path);
-    //} else {
-    //    http_response_code(404);
-    //    echo "$path not found";
-    //}
+    } else {
+        http_response_code(404);
+        echo 'page not found';
+        die();
+    }
     ?>
 </div>
 </body>
