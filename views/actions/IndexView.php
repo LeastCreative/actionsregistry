@@ -11,8 +11,6 @@ class IndexView
     function render($model)
     {
         $actions = $model->actions;
-
-
         ?>
 
         <h1>List</h1>
@@ -75,9 +73,8 @@ class IndexView
                 var table = $("#actions").DataTable({
                     order: [],
                     dom: 'Bfrtip',
-                    lengthChange: false,
-                    searching: false,
                     buttons: [
+                        'pageLength',
                         {
                             extend: 'copy',
                             exportOptions: {
@@ -111,15 +108,6 @@ class IndexView
                                 $(node).removeClass('btn-default')
                             }
                         }]
-                });
-
-                table.columns().every(function () {
-                    var self = this;
-                    $('input', this.footer()).on('keyup change', function () {
-                        if (self.search() !== this.value) {
-                            self.search(this.value).draw();
-                        }
-                    });
                 });
 
 

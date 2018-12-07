@@ -25,7 +25,7 @@ class IndexView
                 <tr>
                     <td><?= $status->description ?></td>
                     <td>
-                        <a class="btn btn-sm edit" href="statuses/edit/<?= $status->status_id ?>">Edit</a>
+                        <a class="btn btn-sm btn-secondary edit" href="statuses/edit/<?= $status->status_id ?>">Edit</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -37,6 +37,7 @@ class IndexView
                     order: [],
                     dom: 'Bfrtip',
                     buttons: [
+                        'pageLength',
                         {
                             text: 'Add',
                             className: "btn-success",

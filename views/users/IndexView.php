@@ -30,12 +30,22 @@ class IndexView
                     <td><?= $user->last_name ?></td>
                     <td><?= $user->team_name ?></td>
                     <td>
-                        <a class="btn btn-sm edit" href="users/edit/<?= $user_id ?>">Edit</a>
+                        <a class="btn btn-sm edit btn-secondary" href="users/edit/<?= $user_id ?>">Edit</a>
                     </td>
                 </tr>
             <?php endforeach; ?>
             </tbody>
         </table>
-
+        <script>
+            $(document).ready(function () {
+                $("#users").DataTable({
+                    order: [],
+                    dom: 'Bfrtip',
+                    buttons: [
+                        'pageLength'
+                    ]
+                });
+            });
+        </script>
     <?php }
 }

@@ -71,6 +71,9 @@ class HomeController extends Controller
             if (!empty($config['max_action_age'])) {
                 $expirationDays = $config['max_action_age'] + 0;
             }
+        } else {
+            //default to one year
+            $expirationDays = 365;
 
         }
 
@@ -167,7 +170,8 @@ class HomeController extends Controller
      *
      * @return null|string
      */
-    private function getTeamId()
+    private
+    function getTeamId()
     {
         //request id takes priority
         if (isset($_GET['teamId'])) {
